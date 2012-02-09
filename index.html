@@ -48,6 +48,12 @@
 						<input id="inLocation" type="text" placeholder="Location" class="input-text">
 						<label>Radius (miles)</label>
 						<input id="inRadius" type="number" min="1" max="50" placeholder="Radius" class="input-text">
+						<label>Travel Mode</label>
+						<select id="inTravelMode">
+							<option SELECTED value="DRIVING">Driving</option>
+							<option value="WALKING">Walking</option>
+							<option value="BICYCLING">Bicycling</option>
+						</select>
 						<button type="button" id="load" class="nice blue button">List Apartments</button>
 					</form>
 					<button type="button" id="showListForm" style="display:none" class="nice blue button">Search Again</button>

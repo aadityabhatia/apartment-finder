@@ -92,11 +92,11 @@ $(function () {
 
 			if(!item['geo:lat']) {
 				item.aerialDistance = RADIUS_SEARCH_DEFAULT;
-				item.driveTime = "unknown";
+				item.travelTime = "unknown";
 				return true;
 			}
 			item.aerialDistance = aerialDistance(item['geo:lat'], item['geo:long'], DEST_LAT, DEST_LONG);
-			item.driveTime = item.aerialDistance.toPrecision(2) + " miles";
+			item.travelTime = "[{0} miles]".format(item.aerialDistance.toPrecision(2));
 		}
 
 		var searchRadius = +$("#inRadius").val() || RADIUS_SEARCH_DEFAULT;
@@ -108,6 +108,8 @@ $(function () {
 	};
 
 	function createTable(contentPanel, data) {
+		var travelModeLabel = $('#inTravelMode').children('[selected]').text();
+
 		contentPanel.html('<table cellpadding="0" cellspacing="0" border="0" width="100%" id="contentTable"></table>');
 		blaze.table = $('#contentTable').dataTable({
 			"aaData": data,
@@ -119,9 +121,9 @@ $(function () {
 			"bAutoWidth": true,
 			"aoColumns": [
 				{sTitle: "Title", mDataProp: "title"},
-				{sTitle: "Drive", mDataProp: "driveTime"},
+				{sTitle: travelModeLabel, mDataProp: "travelTime"},
 				{sTitle: "Rent", mDataProp: "rent"},
-				{sTitle: "Distance", mDataProp: "aerialDistance", "bVisible": false},
+				{sTitle: "Distance", mDataProp: "aerialDistance", "bVisible": false}
 			]
 		});
 
@@ -136,11 +138,13 @@ $(function () {
 				return;
 			}
 
+			var travelMode = $('#inTravelMode').val();
+
 			blaze.distanceService = blaze.distanceService || new google.maps.DistanceMatrixService();
 			blaze.distanceService.getDistanceMatrix({
 				origins: [new google.maps.LatLng(item['geo:lat'], item['geo:long'])],
 				destinations: [new google.maps.LatLng(DEST_LAT, DEST_LONG)],
-				travelMode: google.maps.TravelMode.DRIVING,
+				travelMode: google.maps.TravelMode[travelMode],
 				avoidHighways: false,
 				avoidTolls: false
 			}, function(response, status) {
@@ -150,8 +154,8 @@ $(function () {
 				}
 				var duration = response.rows[0].elements[0].duration.text;
 				if(duration) {
-					item.driveTime = duration;
 					blaze.table.fnUpdate(duration, event.target.parentElement, 1);
+					item.travelTime = duration;
 					displayItem(item);
 				} else {
 					console.error("distance: " + duration);
@@ -162,8 +166,10 @@ $(function () {
 
 	function displayItem(item) {
 
+		var travelModeLabel = $('#inTravelMode').children('[selected]').text();
+
 		var html = "<h2>" + item.title + "</h2>";
-		html += "<h3><span class='green smallCaps'>Drive: " + item.driveTime + "</span></h3>";
+		html += "<h3><span class='green smallCaps'>{0}: {1}</span></h3>".format(travelModeLabel, item.travelTime);
 		html += "<h4><span class='gray italic'>posted " + $.timeago(item.pubDate) + " (<a class='smallCaps' href='"+item.link+"'>link</a>)</span></h4>";
 		html += item.description;
 		if(item['geo:lat'])
