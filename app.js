@@ -7,7 +7,7 @@ const RADIUS_SEARCH_DEFAULT = 999; // miles
 
 const ELEMENT_STATIC_MAP = "<img src='http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&zoom=13&size=400x400&sensor=false&scale=2&markers={0},{1}'>";
 
-const DATA_URL = "http://pipes.yahoo.com/pipes/pipe.run?Area=sfbay&Region=sby&Region2=pen&maxRent={0}&bedrooms={1}&_id=4c04a69e86787da5a0a08d33dac93aa1&_render=json";
+const DATA_URL = "http://pipes.yahoo.com/pipes/pipe.run?maxRent={0}&bedrooms={1}&city=sfbay&region=sby,pen&_id=dca16869da698f662c6c8d1ed81e63f0&_render=json";
 
 String.prototype.format = function() {
 	var args = arguments;
