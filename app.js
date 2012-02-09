@@ -5,7 +5,7 @@ const DEST_LONG = -122.07979;
 const RADIUS_OF_EARTH = 3963; // miles
 const RADIUS_SEARCH_DEFAULT = 999; // miles
 
-const ELEMENT_STATIC_MAP = "<img src='http://maps.googleapis.com/maps/api/staticmap?center={0}&zoom=13&size=400x400&sensor=false&scale=2&markers={0}'>";
+const ELEMENT_STATIC_MAP = "<img src='http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&zoom=13&size=400x400&sensor=false&scale=2&markers={0},{1}'>";
 
 const DATA_URL = "http://pipes.yahoo.com/pipes/pipe.run?Area=sfbay&Region=sby&Region2=pen&maxRent={0}&bedrooms={1}&_id=4c04a69e86787da5a0a08d33dac93aa1&_render=json";
 
@@ -83,15 +83,6 @@ $(function () {
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 
-			var loc = item.description.match(/(http:\/\/maps.google.com\/\?q=loc%3A\+(.*))"/);
-			if(loc && loc.length > 1) {
-				item.address = decodeURIComponent(loc[2]).replace(/\+/g, ' ');
-				item.mapLink = loc[1];
-			} else {
-				item.mapLink = "#";
-				item.address = "";
-			}
-
 			var rent = item['dc:title'].match(/\$(\d+) /);
 			if(rent && rent.length > 1) {
 				item.rent = rent[1];
@@ -147,7 +138,7 @@ $(function () {
 
 			blaze.distanceService = blaze.distanceService || new google.maps.DistanceMatrixService();
 			blaze.distanceService.getDistanceMatrix({
-				origins: [item.address],
+				origins: [new google.maps.LatLng(item['geo:lat'], item['geo:long'])],
 				destinations: [new google.maps.LatLng(DEST_LAT, DEST_LONG)],
 				travelMode: google.maps.TravelMode.DRIVING,
 				avoidHighways: false,
@@ -175,8 +166,8 @@ $(function () {
 		html += "<h3><span class='green smallCaps'>Drive: " + item.driveTime + "</span></h3>";
 		html += "<h4><span class='gray italic'>posted " + $.timeago(item.pubDate) + " (<a class='smallCaps' href='"+item.link+"'>link</a>)</span></h4>";
 		html += item.description;
-		if(item.address)
-			html += ELEMENT_STATIC_MAP.format(item.address);
+		if(item['geo:lat'])
+			html += ELEMENT_STATIC_MAP.format(item['geo:lat'], item['geo:long']);
 		$("#description").html(html);
 
 		if(blaze.phone) {
