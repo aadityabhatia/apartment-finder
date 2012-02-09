@@ -20,19 +20,18 @@ String.prototype.format = function() {
 };
 
 $(function () {
-    if ($(".show-on-phones").css('display') == "block") {
+
+	if ($(".show-on-phones").css('display') == "block") {
     	blaze.phone = true;
         $("#descriptionContainerMobile").prepend($("#description"));
     }
-});
-
-$(function () {
 
 	$("button#load").click(function() {
 		$("#ajaxLoader").fadeIn();
 		$('#formListApartments').hide();
 		$("#showListForm").fadeIn();
 		$.ajax(DATA_URL.format($("#inMaxRent").val(), $("#inBedrooms").val()), {
+			dataType: 'json',
 			success: function(data, textStatus) {
 				console.log(data.value);
 				$("#ajaxLoader").css('display', 'none');
@@ -63,7 +62,7 @@ $(function () {
 	});
 
 	$("input").change(function(event) {
-		var element = event.srcElement;
+		var element = event.target;
 		localStorage.setItem('field-' + (element.name || element.id), element.value);
 	});
 
@@ -139,7 +138,7 @@ $(function () {
 
 		blaze.table.on('click', 'tr', function(event) {
 
-			var item = blaze.table._(event.srcElement.parentElement)[0];
+			var item = blaze.table._(event.target.parentElement)[0];
 			displayItem(item);
 
 			if(!item['geo:lat']) {
@@ -160,8 +159,8 @@ $(function () {
 				}
 				var duration = response.rows[0].elements[0].duration.text;
 				if(duration) {
-					blaze.table.fnUpdate(duration, event.srcElement.parentElement, 1);
 					item.driveTime = duration;
+					blaze.table.fnUpdate(duration, event.target.parentElement, 1);
 					displayItem(item);
 				} else {
 					console.error("distance: " + duration);
@@ -171,10 +170,7 @@ $(function () {
 	};
 
 	function displayItem(item) {
-		if(typeof(item) == "string") {
-			$("#description").html(item);
-			return;
-		}
+
 		var html = "<h2>" + item.title + "</h2>";
 		html += "<h3><span class='green smallCaps'>Drive: " + item.driveTime + "</span></h3>";
 		html += "<h4><span class='gray italic'>posted " + $.timeago(item.pubDate) + " (<a class='smallCaps' href='"+item.link+"'>link</a>)</span></h4>";
@@ -189,7 +185,7 @@ $(function () {
 	}
 
 	$(document).on('click', 'a', function(event) {
-		var a = $(event.srcElement);
+		var a = $(event.target);
 		if(a[0].host == window.location.host) {
 			console.log("Local link clicked: %s", a[0].href);
 			return false;
