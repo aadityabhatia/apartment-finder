@@ -31,7 +31,7 @@ $(function () {
 	$("button#load").click(function() {
 		$("#ajaxLoader").fadeIn();
 		$('#formListApartments').hide();
-		$("button#showListForm").fadeIn();
+		$("#showListForm").fadeIn();
 		$.ajax(DATA_URL.format($("#inMaxRent").val(), $("#inBedrooms").val()), {
 			success: function(data, textStatus) {
 				console.log(data.value);
@@ -44,6 +44,7 @@ $(function () {
 
 	$("button#showListForm").click(function() {
 		$('#formListApartments').show();
+		$("#showListForm").fadeOut();
 		$("#scrollTop").fadeOut();
 		$("#descriptionContainerMobile").fadeOut();
 		$("#content").html("");
