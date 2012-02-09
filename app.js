@@ -37,6 +37,7 @@ $(function () {
 				$("#ajaxLoader").css('display', 'none');
 				loadResults(data.value.items);
 				$("#scrollTop").fadeIn();
+				expandTable();
 			}
 		});
 	});
@@ -47,6 +48,7 @@ $(function () {
 		$("#scrollTop").fadeOut();
 		$("#descriptionContainerMobile").fadeOut();
 		$("#content").html("");
+		expandTable();
 	});
 
 	$("#scrollTop").click(function() {
@@ -54,6 +56,17 @@ $(function () {
 			$('body').animate({scrollTop: 0});
 		}, 20);
 	});
+	
+	function expandDescription() {
+		$('#formAndTable').switchClass('twelve', 'four');
+		$('#description').fadeIn();
+	}
+	
+	function expandTable() {
+		$('#formAndTable').switchClass('four', 'twelve');
+		$('#description').fadeOut();
+		$('body').animate({scrollTop: 0});
+	}
 
 	$("input").each(function(index, element){
 		var value = localStorage.getItem('field-' + (element.name || element.id));
@@ -166,15 +179,22 @@ $(function () {
 
 	function displayItem(item) {
 
+		expandDescription();
+		
 		var travelModeLabel = $('#inTravelMode').children('[selected]').text();
 
 		var html = "<h2>" + item.title + "</h2>";
 		html += "<h3><span class='greenText smallCaps'>{0}: {1}</span></h3>".format(travelModeLabel, item.travelTime);
 		html += "<h4><span class='grayText italic'>posted " + $.timeago(item.pubDate)
+			+ " (<a class='smallCaps' href='" + item.link + "'>link</a>)</span>"
+			+ "<button id='btnHideDescription' class='small round red button'>X</button></h4>";
 		html += item.description;
 		if(item['geo:lat'])
 			html += ELEMENT_STATIC_MAP.format(item['geo:lat'], item['geo:long']);
 		$("#description").html(html);
+		$("#btnHideDescription").click(function(){
+			expandTable();
+		});
 
 		if(blaze.phone) {
 			$('body').animate({scrollTop: $("#description").offset().top - 10});
