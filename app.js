@@ -169,8 +169,8 @@ $(function () {
 		var travelModeLabel = $('#inTravelMode').children('[selected]').text();
 
 		var html = "<h2>" + item.title + "</h2>";
-		html += "<h3><span class='green smallCaps'>{0}: {1}</span></h3>".format(travelModeLabel, item.travelTime);
-		html += "<h4><span class='gray italic'>posted " + $.timeago(item.pubDate) + " (<a class='smallCaps' href='"+item.link+"'>link</a>)</span></h4>";
+		html += "<h3><span class='greenText smallCaps'>{0}: {1}</span></h3>".format(travelModeLabel, item.travelTime);
+		html += "<h4><span class='grayText italic'>posted " + $.timeago(item.pubDate)
 		html += item.description;
 		if(item['geo:lat'])
 			html += ELEMENT_STATIC_MAP.format(item['geo:lat'], item['geo:long']);
