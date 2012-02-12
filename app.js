@@ -187,7 +187,7 @@ $(function () {
 		html += "<h3><span class='greenText smallCaps'>{0}: {1}</span></h3>".format(travelModeLabel, item.travelTime);
 		html += "<h4><span class='grayText italic'>posted " + $.timeago(item.pubDate)
 			+ " (<a class='smallCaps' href='" + item.link + "'>link</a>)</span>"
-			+ "<button id='btnHideDescription' class='small round red button'>X</button></h4>";
+			+ "<button id='btnHideDescription' class='small round button'>return</button></h4>";
 		html += item.description;
 		if(item['geo:lat'])
 			html += ELEMENT_STATIC_MAP.format(item['geo:lat'], item['geo:long']);
